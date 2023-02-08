@@ -11,7 +11,7 @@ Go to "start project"- https://start.spring.io., Choose either Gradle or Maven, 
 -->How to run
 
 After creating REST API connect it with server- will use port 8080 . After connecting with the server use POSTMAN to display result og GET, POST and PUT
---> Successful start of the application, Select GET option and mention the URL - localhost:8080/healthz to validate result and to see database of user  URL- http://localhost:8080/v1/user .
+--> Successful start of the application, Select GET option and mention the URL - localhost:8081/healthz to validate result and to see database of user  URL- http://localhost:8081/v1/user .
 
 "first_name": "Naiya",
 
