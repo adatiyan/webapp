@@ -1,7 +1,7 @@
 package com.example.assignment1.service;
 
 import java.util.Optional;
-import java.util.UUID;
+//import java.util.UUID;
 
 import com.example.assignment1.exeception.DataNotFoundExeception;
 import com.example.assignment1.exeception.UserAuthrizationExeception;
@@ -9,13 +9,14 @@ import com.example.assignment1.exeception.UserExistException;
 import com.example.assignment1.model.User;
 import com.example.assignment1.model.UserDto;
 import com.example.assignment1.model.UserUpdateRequestModel;
+import com.example.assignment1.model.Product;
 import com.example.assignment1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+import jakarta.validation.Valid;
 
 @Service
 public class UserService {
@@ -38,7 +39,7 @@ public class UserService {
         throw new UserExistException("User Exists Already");
     }
 
-    public UserDto getUserDetails(UUID userId) throws DataNotFoundExeception {
+    public UserDto getUserDetails(Long userId) throws DataNotFoundExeception {
         Optional<User> user = userrepo.findById(userId);
         if (user.isPresent()) {
             UserDto dto = UserDto.getUserDto(user.get());
@@ -47,7 +48,7 @@ public class UserService {
         throw new DataNotFoundExeception("User Not Found");
     }
 
-    public String updateUserDetails(UUID userId, UserUpdateRequestModel user) throws DataNotFoundExeception, UserAuthrizationExeception {
+    public String updateUserDetails(Long userId, UserUpdateRequestModel user) throws DataNotFoundExeception, UserAuthrizationExeception {
         Optional<User> userObj = userrepo.findById(userId);
         if (userObj.isPresent()) {
             if(!userObj.get().getUsername().equals(user.getUsername()))

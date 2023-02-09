@@ -1,5 +1,5 @@
 package com.example.assignment1.controller;
-import java.util.UUID;
+//import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -11,6 +11,8 @@ import com.example.assignment1.model.User;
 import com.example.assignment1.model.UserUpdateRequestModel;
 import com.example.assignment1.service.AuthService;
 import constants.UserConstants;
+import com.example.assignment1.service.UserService;
+import com.example.assignment1.model.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +31,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController()
-@RequestMapping("v1")
+@RequestMapping("v1/user")
 public class UserController {
 
     @Autowired
-    com.example.assignment1.service.UserService userService;
+    UserService userService;
 
     @Autowired
     AuthService authService;
 
 
-    @GetMapping(value = "/user/{userId}")
-    public ResponseEntity<?> getUserDetails(@PathVariable("userId") UUID userId, HttpServletRequest request){
+    @GetMapping(value = "/{userId}")
+    public ResponseEntity<?> getUserDetails(@PathVariable("userId") Long userId,HttpServletRequest request){
         try {
             if(userId.toString().isBlank()||userId.toString().isEmpty()) {
                 throw new InvalidInputException("Enter Valid User Id");
             }
             authService.isAuthorised(userId,request.getHeader("Authorization").split(" ")[1]);
-            return new ResponseEntity<com.example.assignment1.model.UserDto>( userService.getUserDetails(userId),HttpStatus.OK);
+            return new ResponseEntity<UserDto>( userService.getUserDetails(userId),HttpStatus.OK);
         } catch (InvalidInputException e) {
             // TODO Auto-generated catch block
             return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
@@ -65,21 +67,20 @@ public class UserController {
 
     }
 
-    @PutMapping(value = "/user/{userId}")
-    public ResponseEntity<?> updateUserDetails(@PathVariable("userId") UUID userId, @Valid @RequestBody UserUpdateRequestModel user,
+    @PutMapping(value = "/{userId}")
+    public ResponseEntity<?> updateUserDetails(@PathVariable("userId") Long userId,@Valid @RequestBody UserUpdateRequestModel user,
                                                HttpServletRequest request,Errors error){
         try {
             if(userId.toString().isBlank()||userId.toString().isEmpty()) {
                 throw new InvalidInputException("Enter Valid User Id");
             }
-            System.out.println(user);
             authService.isAuthorised(userId,request.getHeader("Authorization").split(" ")[1]);
             if(error.hasErrors()) {
                 String response = error.getAllErrors().stream().map(ObjectError::getDefaultMessage)
                         .collect(Collectors.joining(","));
                 throw new InvalidInputException(response);
             }
-            return new ResponseEntity<String>( userService.updateUserDetails(userId,user),HttpStatus.CREATED);
+            return new ResponseEntity<String>( userService.updateUserDetails(userId,user),HttpStatus.NO_CONTENT);
         } catch (InvalidInputException e) {
             // TODO Auto-generated catch block
             return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
@@ -98,8 +99,8 @@ public class UserController {
 
     }
 
-    @PostMapping("/user")
-    public ResponseEntity<String> createUser(@Valid @RequestBody User user, Errors error){
+    @PostMapping()
+    public ResponseEntity<String> createUser(@Valid @RequestBody User user,Errors error){
         try {
             if(error.hasErrors()) {
                 String response = error.getAllErrors().stream().map(ObjectError::getDefaultMessage)
@@ -120,4 +121,3 @@ public class UserController {
         }
     }
 }
-
