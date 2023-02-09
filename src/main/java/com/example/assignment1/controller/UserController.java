@@ -2,7 +2,7 @@ package com.example.assignment1.controller;
 //import java.util.UUID;
 import java.util.stream.Collectors;
 
-
+import com.example.assignment1.constants.UserConstants;
 import com.example.assignment1.exeception.DataNotFoundExeception;
 import com.example.assignment1.exeception.InvalidInputException;
 import com.example.assignment1.exeception.UserAuthrizationExeception;
@@ -10,7 +10,7 @@ import com.example.assignment1.exeception.UserExistException;
 import com.example.assignment1.model.User;
 import com.example.assignment1.model.UserUpdateRequestModel;
 import com.example.assignment1.service.AuthService;
-import constants.UserConstants;
+//import constants.UserConstants;
 import com.example.assignment1.service.UserService;
 import com.example.assignment1.model.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -100,14 +100,14 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> createUser(@Valid @RequestBody User user,Errors error){
+    public ResponseEntity<?> createUser(@Valid @RequestBody User user,Errors error){
         try {
             if(error.hasErrors()) {
                 String response = error.getAllErrors().stream().map(ObjectError::getDefaultMessage)
                         .collect(Collectors.joining(","));
                 throw new InvalidInputException(response);
             }
-            return new ResponseEntity<String>( userService.createUser(user),HttpStatus.CREATED);
+            return new ResponseEntity<User>( userService.createUser(user),HttpStatus.CREATED);
         } catch (InvalidInputException e) {
             // TODO Auto-generated catch block
             return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
