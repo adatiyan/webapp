@@ -1,7 +1,7 @@
 package com.example.assignment1.service;
 
 import java.util.Optional;
-
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,8 @@ public class ProductService {
     @Autowired
     UserService userService;
 
-    public Product createProduct(Product product,String userName) throws UserAuthrizationExeception, InvalidInputException {
+    public Product createProduct(Product product,String userName)
+            throws UserAuthrizationExeception, InvalidInputException {
         // TODO Auto-generated method stub
         User userobj=userService.loadUserByUsername(userName);
         if(userobj!=null) {
@@ -32,7 +33,7 @@ public class ProductService {
             return product;
         }
         // throw auth error
-        throw new UserAuthrizationExeception("UnAuthrized username dose not exists");
+        throw new UserAuthrizationExeception("UnAuthorized username dose not exists");
     }
 
     public Product checkSku(Long id,Long ownerId,String sku,String check) throws InvalidInputException {
@@ -72,6 +73,50 @@ public class ProductService {
         return "Deleted Product";
     }
 
+    public String patchProductDetails(Long productId, Map<String, Object> updates)
+            throws DataNotFoundExeception, InvalidInputException {
+        Product p = getProduct(productId);
+        if(updates.size()==0)
+            throw new InvalidInputException("Request can't be empty");
+        for (Map.Entry<String, Object> map : updates.entrySet()) {
+            switch (map.getKey()) {
+                case "name":
+                    String name = (String) map.getValue();
+                    if (name.isBlank() || name.isEmpty()||name==null)
+                        throw new InvalidInputException("Product Name can't be null/empty");
+                    else
+                        p.setName(name);
+                    break;
+                case "description":
+                    String description = (String) map.getValue();
+                    if (description.isBlank() || description.isEmpty()||description==null)
+                        throw new InvalidInputException("Product description can't be null/empty");
+                    p.setDescription(description);
+                    break;
+                case "sku":
+                    String sku = (String) map.getValue();
+                    if (sku.isBlank() || sku.isEmpty()||sku==null)
+                        throw new InvalidInputException("Product SKU can't be null/empty");
+                    checkSku(p.getId(), p.getOwnerUserId(), sku, "PostCheck");
+                    p.setSku(sku);
+                    break;
+                case "manufacture":
+                    String manufacture = (String) map.getValue();
+                    if (manufacture.isBlank() || manufacture.isEmpty()||manufacture==null)
+                        throw new InvalidInputException("Product manufacture can't be null/empty");
+                    p.setManufacturer(manufacture);
+                    break;
+                case "quantity":
+                    Integer quantity = (Integer) map.getValue();
+                    if (quantity < 1 || quantity > 100)
+                        throw new InvalidInputException("Product quantity should be btw 1 and 100");
+                    p.setQuantity(quantity);
+                    break;
+            }
+        }
+        productRepo.saveAndFlush(p);
+        return "Updated Product Details";
+    }
 
 }
 
