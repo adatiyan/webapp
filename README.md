@@ -2,7 +2,7 @@
 "Naiya Adatiya"
 
 This is a demo of webapp
-Start working on Assign2
+
 -->This is a sample Java, Maven ,Spring Boot application which provides RESTful services using GET, POST, PUT
 
 -->To manually initialize the project:
