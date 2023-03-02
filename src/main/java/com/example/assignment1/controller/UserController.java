@@ -28,96 +28,86 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 @RestController()
 @RequestMapping("v1/user")
 public class UserController {
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    AuthService authService;
-
-
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	AuthService authService;
+	
+	
     @GetMapping(value = "/{userId}")
     public ResponseEntity<?> getUserDetails(@PathVariable("userId") Long userId,HttpServletRequest request){
-        try {
-            if(userId.toString().isBlank()||userId.toString().isEmpty()) {
-                throw new InvalidInputException("Enter Valid User Id");
+    	try {
+    		if(userId.toString().isBlank()||userId.toString().isEmpty()) {
+            	throw new InvalidInputException("Enter Valid User Id");
             }
-            authService.isAuthorised(userId,request.getHeader("Authorization").split(" ")[1]);
-            return new ResponseEntity<UserDto>( userService.getUserDetails(userId),HttpStatus.OK);
-        } catch (InvalidInputException e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
-        catch (UserAuthrizationExeception e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.FORBIDDEN);
-        }
-        catch (DataNotFoundExeception e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.NOT_FOUND);
-        }
-        catch(Exception e) {
-            return new ResponseEntity<String>(UserConstants.InternalErr,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+    		authService.isAuthorised(userId,request.getHeader("Authorization").split(" ")[1]);
+			return new ResponseEntity<UserDto>( userService.getUserDetails(userId),HttpStatus.OK);
+		} catch (InvalidInputException e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+    	catch (UserAuthrizationExeception e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.FORBIDDEN);
+		}
+    	catch (DataNotFoundExeception e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.NOT_FOUND);
+		}
+    	catch(Exception e) {
+    		return new ResponseEntity<String>(UserConstants.InternalErr,HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+        
     }
-
+    
     @PutMapping(value = "/{userId}")
     public ResponseEntity<?> updateUserDetails(@PathVariable("userId") Long userId,@Valid @RequestBody UserUpdateRequestModel user,
-                                               HttpServletRequest request,Errors error){
-        try {
-            if(userId.toString().isBlank()||userId.toString().isEmpty()) {
-                throw new InvalidInputException("Enter Valid User Id");
+    		HttpServletRequest request,Errors error){
+    	try {
+    		if(userId.toString().isBlank()||userId.toString().isEmpty()) {
+            	throw new InvalidInputException("Enter Valid User Id");
             }
-            authService.isAuthorised(userId,request.getHeader("Authorization").split(" ")[1]);
-            if(error.hasErrors()) {
-                String response = error.getAllErrors().stream().map(ObjectError::getDefaultMessage)
-                        .collect(Collectors.joining(","));
-                throw new InvalidInputException(response);
-            }
-            return new ResponseEntity<String>( userService.updateUserDetails(userId,user),HttpStatus.NO_CONTENT);
-        } catch (InvalidInputException e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
-        catch (UserAuthrizationExeception e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.FORBIDDEN);
-        }
-        catch (DataNotFoundExeception e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.NOT_FOUND);
-        }
-        catch(Exception e) {
-            return new ResponseEntity<String>(UserConstants.InternalErr,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
+    		authService.isAuthorised(userId,request.getHeader("Authorization").split(" ")[1]);
+    		if(error.hasErrors()) {
+    			String response = error.getAllErrors().stream().map(ObjectError::getDefaultMessage)
+    					.collect(Collectors.joining(","));
+    			throw new InvalidInputException(response);
+    		}
+			return new ResponseEntity<String>( userService.updateUserDetails(userId,user),HttpStatus.NO_CONTENT);
+		} catch (InvalidInputException e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+    	catch (UserAuthrizationExeception e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.FORBIDDEN);
+		}
+    	catch (DataNotFoundExeception e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.NOT_FOUND);
+		}
+    	catch(Exception e) {
+    		return new ResponseEntity<String>(UserConstants.InternalErr,HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+        
     }
-
+    
     @PostMapping()
     public ResponseEntity<?> createUser(@Valid @RequestBody User user,Errors error){
-        try {
-            if(error.hasErrors()) {
-                String response = error.getAllErrors().stream().map(ObjectError::getDefaultMessage)
-                        .collect(Collectors.joining(","));
-                throw new InvalidInputException(response);
-            }
-            return new ResponseEntity<UserDto>( userService.createUser(user),HttpStatus.CREATED);
-        } catch (InvalidInputException e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
-        catch (UserExistException e) {
-            // TODO Auto-generated catch block
-            return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
-        catch(Exception e) {
-            return new ResponseEntity<String>(UserConstants.InternalErr,HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    	try {
+    		if(error.hasErrors()) {
+    			String response = error.getAllErrors().stream().map(ObjectError::getDefaultMessage)
+    					.collect(Collectors.joining(","));
+    			throw new InvalidInputException(response);
+    		}
+			return new ResponseEntity<UserDto>( userService.createUser(user),HttpStatus.CREATED);
+		} catch (InvalidInputException e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+    	catch (UserExistException e) {
+			return new ResponseEntity<String>( e.getMessage(),HttpStatus.BAD_REQUEST);
+		}
+    	catch(Exception e) {
+    		return new ResponseEntity<String>(UserConstants.InternalErr,HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
     }
 }
