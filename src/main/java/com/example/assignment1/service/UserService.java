@@ -69,7 +69,6 @@ public class UserService {
     }
 
     public User loadUserByUsername(String username) {
-        // TODO Auto-generated method stub
         User user = userrepo.findByUsername(username);
         if (user == null) {
             return null;

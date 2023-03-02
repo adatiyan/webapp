@@ -67,6 +67,11 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 
 		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.12.406</version>
+		</dependency>
 
 
 	</dependencies>
