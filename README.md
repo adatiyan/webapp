@@ -1,6 +1,4 @@
-# webapp
-Name:- "Naiya Adatiya"
-NEU ID:002771371
+
 This is a demo of webapp
 
 -->This is a sample Java, Maven ,Spring Boot application which provides RESTful services using GET, POST, PUT
@@ -13,14 +11,5 @@ Go to "start project"- https://start.spring.io., Choose either Gradle or Maven, 
 After creating REST API connect it with server- will use port 8080 . After connecting with the server use POSTMAN to display result og GET, POST and PUT
 --> Successful start of the application, Select GET option and mention the URL - localhost:8081/healthz to validate result and to see database of user  URL- http://localhost:8081/v1/user .
 
-"first_name": "Naiya",
-
-"last_name": "Adatiya",
-
-"password": "Encryypted in hash key",
-
-"username": "ada.naiya@gmail.com"
-
-}
 
 
